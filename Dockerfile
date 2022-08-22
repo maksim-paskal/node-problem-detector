@@ -33,7 +33,12 @@ FROM ${BASEIMAGE}
 
 LABEL maintainer="Random Liu <lantaol@google.com>"
 
-RUN clean-install util-linux libsystemd0 bash systemd
+RUN clean-install util-linux libsystemd0 bash systemd curl ca-certificates
+
+# install crictl
+RUN curl -L https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.2/crictl-v1.24.2-linux-amd64.tar.gz --output /tmp/crictl.tar.gz \
+&& tar zxvf /tmp/crictl.tar.gz -C /usr/bin \
+&& rm -rf /tmp/crictl.tar.gz
 
 # Avoid symlink of /etc/localtime.
 RUN test -h /etc/localtime && rm -f /etc/localtime && cp /usr/share/zoneinfo/UTC /etc/localtime || true
